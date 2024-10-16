@@ -3,6 +3,7 @@ import ProductList from "@/components/ProductList";
 import Skeleton from "@/components/Skeleton";
 import { wixClientServer } from "@/lib/wixClientServer";
 import Image from "next/image";
+import Link from "next/link";
 import { Suspense } from "react";
 
 const ListPage = async ({ searchParams }: { searchParams: any }) => {
@@ -21,9 +22,11 @@ const ListPage = async ({ searchParams }: { searchParams: any }) => {
             Grab up to 50% off on
             <br /> Selected Products
           </h1>
-          <button className="rounded-3xl bg-lama text-white w-max py-3 px-5 text-sm">
-            Buy Now
-          </button>
+          <Link href={`/list?cat=all-products`}>
+            <button className="rounded-3xl bg-myPink text-white w-max py-3 px-5 text-sm">
+              Buy Now
+            </button>
+          </Link>
         </div>
         <div className="relative w-1/3">
           <Image src="/woman.png" alt="" fill className="object-contain" />
@@ -32,8 +35,10 @@ const ListPage = async ({ searchParams }: { searchParams: any }) => {
       {/* FILTER */}
       <Filter />
       {/* PRODUCTS */}
-      <h1 className="mt-12 text-xl font-semibold">{category?.collection?.name} For You!</h1>
-      <Suspense fallback={<Skeleton/>}>
+      <h1 className="mt-12 text-xl font-semibold">
+        {category?.collection?.name} For You!
+      </h1>
+      <Suspense fallback={<Skeleton />}>
         <ProductList
           categoryId={
             category.collection?._id || "00000000-000000-000000-000000000001"

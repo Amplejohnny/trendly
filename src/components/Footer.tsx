@@ -12,11 +12,10 @@ const Footer = () => {
             <div className="text-2xl tracking-wide">TRENDLY</div>
           </Link>
           <p>
-            3252 Winding Way, Central Plaza, Willowbrook, CA 90210, United
-            States
+            Victoria Island, Lagos, Nigeria.
           </p>
           <span className="font-semibold">workatdeveloper@gmail.com</span>
-          <span className="font-semibold">+1 234 567 890</span>
+          <span className="font-semibold">+234 9030 001 000</span>
           <div className="flex gap-6">
             <Image src="/facebook.png" alt="" width={16} height={16} />
             <Image src="/instagram.png" alt="" width={16} height={16} />
@@ -65,7 +64,7 @@ const Footer = () => {
             Be the first to get the latest news about trends, promotions, and
             much more!
           </p>
-          <div className="flex rounded-sm">
+          <div className="flex">
             <input
               type="text"
               placeholder="Email address"
@@ -89,11 +88,11 @@ const Footer = () => {
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="">
             <span className="text-gray-500 mr-4">Language</span>
-            <span className="font-medium">United States | English</span>
+            <span className="font-medium">Nigeria | English</span>
           </div>
           <div className="">
             <span className="text-gray-500 mr-4">Currency</span>
-            <span className="font-medium">$ USD</span>
+            <span className="font-medium">₦ NGN</span>
           </div>
         </div>
       </div>

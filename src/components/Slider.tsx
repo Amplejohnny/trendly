@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const slides = [
   {
@@ -33,19 +33,61 @@ const slides = [
 
 const Slider = () => {
   const [current, setCurrent] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true); // Tracks the transition state
+  const intervalRef = useRef<NodeJS.Timeout | null>(null); // To store interval reference
 
+  // Normal sliding effect
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  //   }, 3000);
+  //   }, 5000);
 
   //   return () => clearInterval(interval);
   // }, []);
 
+ 
+  const startInterval = () => {
+    
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    
+    intervalRef.current = setInterval(() => {
+      setCurrent((prev) => {
+        if (prev === slides.length - 1) {
+          setIsTransitioning(false); // Disable transition when resetting to first slide
+          return 0; // Reset to first slide
+        } else {
+          return prev + 1; // Move to next slide
+        }
+      });
+    }, 5000);
+  };
+
+  useEffect(() => {
+    startInterval(); // Start the interval when the component mounts
+
+    return () => clearInterval(intervalRef.current!); // Clean up on unmount
+  }, []);
+
+  useEffect(() => {
+    if (!isTransitioning) {
+      // If we're resetting to the first slide, re-enable transition after a brief delay
+      const timeout = setTimeout(() => {
+        setIsTransitioning(true);
+        startInterval(); // Restart the interval after resetting
+      }, 50); // Brief delay to apply transition again
+      return () => clearTimeout(timeout); // Clear timeout when component re-renders
+    }
+  }, [isTransitioning]);
+
   return (
     <div className="h-[calc(100vh-80px)] overflow-hidden">
       <div
-        className="w-max h-full flex transition-all ease-in-out duration-1000"
+        className={`w-max h-full flex ${
+          isTransitioning
+            ? "transition-transform duration-1000 ease-in-out"
+            : "duration-0"
+        }`}
         style={{ transform: `translateX(-${current * 100}vw)` }}
       >
         {slides.map((slide) => (
@@ -61,7 +103,7 @@ const Slider = () => {
               <h1 className="text-5xl lg:text-6xl 2xl:text-8xl font-semibold">
                 {slide.title}
               </h1>
-              <Link href={slide.url}>
+              <Link href={`/list?cat=all-products`}>
                 <button className="rounded-md bg-black text-white py-3 px-4 ">
                   SHOP NOW
                 </button>
@@ -83,7 +125,7 @@ const Slider = () => {
       <div className="absolute m-auto left-1/2 bottom-8 flex gap-4">
         {slides.map((slide, index) => (
           <div
-            className={`w-3 h-3  rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${
+            className={`w-3 h-3 rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${
               current === index ? "scale-150" : ""
             }`}
             key={slide.id}

@@ -7,11 +7,19 @@ import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
 
 const CartModal = () => {
-  // TEMPORARY
-  // const cartItems = true;
-
   const wixClient = useWixClient();
   const { cart, isLoading, removeItem } = useCartStore();
+
+  const calculateSubtotal = () => {
+    return (
+      cart.lineItems?.reduce((total, item) => {
+        const quantity = item.quantity ?? 0;
+        const priceAmount = item.price?.amount ?? 0;
+        const itemTotal = Number(quantity) * Number(priceAmount);
+        return total + itemTotal;
+      }, 0) || 0
+    );
+  };
 
   const handleCheckout = async () => {
     try {
@@ -77,7 +85,7 @@ const CartModal = () => {
                             {item.quantity} x{" "}
                           </div>
                         )}
-                        ${item.price?.amount}
+                        ₦{item.price?.amount}
                       </div>
                     </div>
                     {/* DESC */}
@@ -104,7 +112,7 @@ const CartModal = () => {
           <div className="">
             <div className="flex items-center justify-between font-semibold">
               <span className="">Subtotal</span>
-              <span className="">${cart.subtotal.amount}</span>
+              <span className="">₦{calculateSubtotal()}</span>
             </div>
             <p className="text-gray-500 text-sm mt-2 mb-4">
               Shipping and taxes calculated at checkout.
@@ -128,4 +136,4 @@ const CartModal = () => {
   );
 };
 
-export default CartModal; 
+export default CartModal;
