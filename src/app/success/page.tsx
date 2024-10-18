@@ -1,10 +1,12 @@
 "use client";
+
+import Skeleton from "@/components/Skeleton";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Confetti from "react-confetti";
 
-const SuccessPage = () => {
-  const searchParams = useSearchParams();
+const SuccessPageContent = () => {
+  const searchParams = useSearchParams();  // Suspense-wrapped hook
   const router = useRouter();
 
   const orderId = searchParams.get("orderId");
@@ -30,6 +32,14 @@ const SuccessPage = () => {
       </h2>
       <h3 className="">You are being redirected to the order page...</h3>
     </div>
+  );
+};
+
+const SuccessPage = () => {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <SuccessPageContent />
+    </Suspense>
   );
 };
 

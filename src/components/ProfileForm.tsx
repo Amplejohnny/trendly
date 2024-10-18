@@ -4,13 +4,15 @@ import { updateUser } from "@/lib/actions";
 import UpdateButton from "@/components/UpdateButton";
 import { members } from "@wix/members";
 import { useState } from "react";
+import { wixClientServer } from "@/lib/wixClientServer";
 
-interface ProfileFormProps {
-  user: members.GetMyMemberResponse &
-    members.GetMyMemberResponseNonNullableFields;
-}
+const ProfileForm = async () => {
+  const wixClient = await wixClientServer();
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
+  const user = await wixClient.members.getCurrentMember({
+    fieldsets: [members.Set.FULL],
+  });
+
   const [email, setEmail] = useState(user.member?.loginEmail || "");
   const [username, setUsername] = useState(
     user.member?.profile?.nickname || ""
@@ -24,7 +26,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   const [phone, setPhone] = useState(
     user.member?.contact?.phones && user.member?.contact?.phones[0]
   );
-  const [contactId, setContactId] = useState(user.member?.contactId || "");
 
   return (
     <div className="w-full md:w-1/2">
@@ -34,8 +35,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
           type="text"
           hidden
           name="id"
-          value={contactId || ""}
-          onChange={(e) => setContactId(e.target.value)}
+          value={user.member?.contactId || ""}
         />
         <label className="text-sm text-gray-700">Username</label>
         <input
