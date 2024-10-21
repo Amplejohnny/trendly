@@ -50,6 +50,7 @@ const NavIcons = () => {
     setIsLoading(false);
     setIsProfileOpen(false);
     router.push(logoutUrl);
+    router.push("/");
   };
 
   const { counter, getCart } = useCartStore();

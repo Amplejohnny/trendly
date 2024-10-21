@@ -72,6 +72,12 @@ const LoginPage = () => {
             password,
             profile: { nickname: username },
           });
+
+          // Check if the email verification is required
+          if (response.loginState === LoginState.EMAIL_VERIFICATION_REQUIRED) {
+            setMode(MODE.EMAIL_VERIFICATION);
+            setMessage("A verification code has been sent to your email.");
+          }
           break;
         case MODE.RESET_PASSWORD:
           response = await wixClient.auth.sendPasswordResetEmail(
@@ -101,6 +107,9 @@ const LoginPage = () => {
           });
           wixClient.auth.setTokens(tokens);
           router.push("/");
+          setTimeout(() => {
+            window.location.reload(); // Reload the page to ensure session is applied
+          }, 100);
           break;
         case LoginState.FAILURE:
           if (
@@ -117,6 +126,7 @@ const LoginPage = () => {
           }
         case LoginState.EMAIL_VERIFICATION_REQUIRED:
           setMode(MODE.EMAIL_VERIFICATION);
+          setMessage("A verification code has been sent to your email.");
         case LoginState.OWNER_APPROVAL_REQUIRED:
           setMessage("Your account is pending approval");
         default:
@@ -141,6 +151,7 @@ const LoginPage = () => {
               type="text"
               name="username"
               placeholder="john"
+              value={username}
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -153,6 +164,7 @@ const LoginPage = () => {
               type="email"
               name="email"
               placeholder="john@gmail.com"
+              value={email}
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -164,6 +176,7 @@ const LoginPage = () => {
               type="text"
               name="emailCode"
               placeholder="Code"
+              value={emailCode}
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setEmailCode(e.target.value)}
             />
@@ -176,6 +189,7 @@ const LoginPage = () => {
               type="password"
               name="password"
               placeholder="Enter your password"
+              value={password}
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -209,7 +223,7 @@ const LoginPage = () => {
             className="text-sm underline cursor-pointer"
             onClick={() => setMode(MODE.LOGIN)}
           >
-            Have and account?
+            Have an account?
           </div>
         )}
         {mode === MODE.RESET_PASSWORD && (
