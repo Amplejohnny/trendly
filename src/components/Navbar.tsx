@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Menu, MobileCart } from "./MobileNavIcons";
 import Image from "next/image";
