@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import Menu from "./Menu";
+import { Menu, MobileCart } from "./MobileNavIcons";
 import Image from "next/image";
 import SearchBar from "./SearchBar";
 import dynamic from "next/dynamic";
@@ -14,7 +16,12 @@ const Navbar = () => {
         <Link href="/">
           <div className="text-2xl tracking-wide">TRENDLY</div>
         </Link>
-        <Menu />
+        <div className="flex items-center gap-14">
+          {/* Cart Icon */}
+          <MobileCart />
+          {/* Menu */}
+          <Menu />
+        </div>
       </div>
       {/* BIGGER SCREENS */}
       <div className="hidden md:flex items-center justify-between gap-8 h-full">

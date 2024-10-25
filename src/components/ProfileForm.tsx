@@ -86,3 +86,19 @@ const ProfileForm = async () => {
 };
 
 export default ProfileForm;
+
+// AUTH WITH WIX-MANAGED AUTH SERVICE with OAuth2 (google, facebook, email)
+
+// const wixClient = useWixClient();
+
+// const login = async () => {
+//   const loginRequestData = wixClient.auth.generateOAuthData(
+//     "http://localhost:3000"
+//   );
+
+//   console.log(loginRequestData);
+
+//   localStorage.setItem("oAuthRedirectData", JSON.stringify(loginRequestData));
+//   const { authUrl } = await wixClient.auth.getAuthUrl(loginRequestData);
+//   window.location.href = authUrl;
+// };

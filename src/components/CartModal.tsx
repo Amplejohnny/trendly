@@ -5,10 +5,13 @@ import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
+import { useRouter } from "next/navigation";
 
 const CartModal = () => {
   const wixClient = useWixClient();
+  const isLoggedIn = wixClient.auth.loggedIn();
   const { cart, isLoading, removeItem } = useCartStore();
+  const router = useRouter();
 
   const calculateSubtotal = () => {
     return (
@@ -22,26 +25,30 @@ const CartModal = () => {
   };
 
   const handleCheckout = async () => {
-    try {
-      const checkout =
-        await wixClient.currentCart.createCheckoutFromCurrentCart({
-          channelType: currentCart.ChannelType.WEB,
-        });
+    if (isLoggedIn) {
+      try {
+        const checkout =
+          await wixClient.currentCart.createCheckoutFromCurrentCart({
+            channelType: currentCart.ChannelType.WEB,
+          });
 
-      const { redirectSession } =
-        await wixClient.redirects.createRedirectSession({
-          ecomCheckout: { checkoutId: checkout.checkoutId },
-          callbacks: {
-            postFlowUrl: window.location.origin,
-            thankYouPageUrl: `${window.location.origin}/success`,
-          },
-        });
+        const { redirectSession } =
+          await wixClient.redirects.createRedirectSession({
+            ecomCheckout: { checkoutId: checkout.checkoutId },
+            callbacks: {
+              postFlowUrl: window.location.origin,
+              thankYouPageUrl: `${window.location.origin}/success`,
+            },
+          });
 
-      if (redirectSession?.fullUrl) {
-        window.location.href = redirectSession.fullUrl;
+        if (redirectSession?.fullUrl) {
+          window.location.href = redirectSession.fullUrl;
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
+    } else {
+      router.push("/login");
     }
   };
 
@@ -118,12 +125,15 @@ const CartModal = () => {
               Shipping and taxes calculated at checkout.
             </p>
             <div className="flex justify-between text-sm">
-              <button className="rounded-md py-3 px-4 ring-1 ring-gray-300">
+              <button
+                disabled={isLoading || !cart.lineItems?.length}
+                className="rounded-md py-3 px-4 ring-1 ring-gray-300 disabled:cursor-not-allowed disabled:opacity-75"
+              >
                 View Cart
               </button>
               <button
                 className="rounded-md py-3 px-4 bg-black text-white disabled:cursor-not-allowed disabled:opacity-75"
-                disabled={isLoading}
+                disabled={isLoading || !cart.lineItems?.length}
                 onClick={handleCheckout}
               >
                 Checkout
