@@ -29,17 +29,20 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
       {/* TEXTS */}
       <div className="w-full lg:w-1/2 flex flex-col gap-6">
         <h1 className="text-4xl font-medium">{product.name}</h1>
-        <p className="text-gray-500">{product.description}</p>
+        <div
+          className="text-gray-500"
+          dangerouslySetInnerHTML={{ __html: product.description || "" }}
+        ></div>
         <div className="h-[2px] bg-gray-100" />
         {product.price?.price === product.price?.discountedPrice ? (
           <h2 className="font-medium text-2xl">₦{product.price?.price}</h2>
         ) : (
           <div className="flex items-center gap-4">
             <h3 className="text-xl text-gray-500 line-through">
-            ₦{product.price?.price}
+              ₦{product.price?.price}
             </h3>
             <h2 className="font-medium text-2xl">
-            ₦{product.price?.discountedPrice}
+              ₦{product.price?.discountedPrice}
             </h2>
           </div>
         )}
@@ -60,14 +63,20 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         <div className="h-[2px] bg-gray-100" />
         {product.additionalInfoSections?.map((section: any) => (
           <div className="text-sm" key={section.title}>
-            <h4 className="font-medium mb-4">{section.title}</h4>
-            <p>{section.description}</p>
+            {section.title !== "shortDesc" && (
+              <>
+                <h4 className="font-medium mb-4">{section.title}</h4>
+                <div
+                  dangerouslySetInnerHTML={{ __html: section.description }}
+                />
+              </>
+            )}
           </div>
         ))}
         <div className="h-[2px] bg-gray-100" />
         {/* REVIEWS */}
         <h1 className="text-2xl">User Reviews</h1>
-        <Suspense fallback="Loading...">
+        <Suspense fallback={<div>Loading reviews...</div>}>
           <Reviews productId={product._id!} />
         </Suspense>
       </div>
