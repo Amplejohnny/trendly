@@ -53,58 +53,59 @@ const CartModal = () => {
   };
 
   return (
-    <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
+    <div className="w-full max-w-[90vw] md:w-max max-h-[70vh] overflow-y-auto p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-20 right-4 fixed flex flex-col gap-6 z-20">
       {!cart.lineItems ? (
-        <div className="">Cart is Empty</div>
+        <div className="text-center">Cart is Empty</div>
       ) : (
         <>
-          <h2 className="text-xl">Shopping Cart</h2>
+          <h2 className="text-xl text-center md:text-start">Shopping Cart</h2>
+
           {/* LIST */}
-          <div className="flex flex-col gap-8">
-            {/* ITEM */}
+          <div className="flex flex-col gap-6 md:gap-8">
             {cart.lineItems.map((item) => (
-              <div className="flex gap-4" key={item._id}>
+              <div className="flex items-start gap-4" key={item._id}>
+                {/* Image only on larger screens */}
                 {item.image && (
-                  <Image
-                    src={wixMedia.getScaledToFillImageUrl(
-                      item.image,
-                      72,
-                      96,
-                      {}
-                    )}
-                    alt=""
-                    width={72}
-                    height={96}
-                    className="object-cover rounded-md"
-                  />
+                  <div className="hidden md:block">
+                    <Image
+                      src={wixMedia.getScaledToFillImageUrl(
+                        item.image,
+                        72,
+                        96,
+                        {}
+                      )}
+                      alt=""
+                      width={72}
+                      height={96}
+                      className="object-cover rounded-md"
+                    />
+                  </div>
                 )}
                 <div className="flex flex-col justify-between w-full">
-                  {/* TOP */}
-                  <div className="">
-                    {/* TITLE */}
-                    <div className="flex items-center justify-between gap-8">
-                      <h3 className="font-semibold">
+                  {/* Product Details */}
+                  <div>
+                    <div className="flex items-center justify-between md:gap-8">
+                      <h3 className="font-semibold text-sm md:text-base">
                         {item.productName?.original}
                       </h3>
-                      <div className="p-1 bg-gray-50 rounded-sm flex items-center gap-2">
+                      <div className="md:p-1 bg-gray-100 rounded px-2 py-1 items-center flex md:gap-2 gap-2 md:text-base text-xs font-medium">
                         {item.quantity && item.quantity > 1 && (
-                          <div className="text-xs text-green-500">
+                          <div className="text-xs text-green-400">
                             {item.quantity} x{" "}
                           </div>
                         )}
                         ₦{item.price?.amount}
                       </div>
                     </div>
-                    {/* DESC */}
-                    <div className="text-sm text-gray-500">
+                    <div className="text-xs md:text-sm text-gray-500">
                       {item.availability?.status}
                     </div>
                   </div>
-                  {/* BOTTOM */}
-                  <div className="flex justify-between text-sm">
+                  {/* Quantity and Remove */}
+                  <div className="flex justify-between items-center text-xs mt-1">
                     <span className="text-gray-500">Qty. {item.quantity}</span>
                     <span
-                      className="text-blue-500"
+                      className="text-red-500 cursor-pointer"
                       style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
                       onClick={() => removeItem(wixClient, item._id!)}
                     >
@@ -115,24 +116,25 @@ const CartModal = () => {
               </div>
             ))}
           </div>
-          {/* BOTTOM */}
-          <div className="">
+
+          {/* Subtotal and Actions */}
+          <div className="border-t pt-1">
             <div className="flex items-center justify-between font-semibold">
-              <span className="">Subtotal</span>
-              <span className="">₦{calculateSubtotal()}</span>
+              <span>Subtotal</span>
+              <span>₦{calculateSubtotal()}</span>
             </div>
-            <p className="text-gray-500 text-sm mt-2 mb-4">
+            <p className="text-xs text-gray-500 mt-1">
               Shipping and taxes calculated at checkout.
             </p>
-            <div className="flex justify-between text-sm">
+            <div className="flex gap-2 mt-4">
               <button
                 disabled={isLoading || !cart.lineItems?.length}
-                className="rounded-md py-3 px-4 ring-1 ring-gray-300 disabled:cursor-not-allowed disabled:opacity-75"
+                className="flex-1 rounded-md py-2 px-3 ring-1 ring-gray-300 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-75"
               >
                 View Cart
               </button>
               <button
-                className="rounded-md py-3 px-4 bg-black text-white disabled:cursor-not-allowed disabled:opacity-75"
+                className="flex-1 rounded-md py-2 px-3 bg-black text-white text-sm font-medium disabled:cursor-not-allowed disabled:opacity-75"
                 disabled={isLoading || !cart.lineItems?.length}
                 onClick={handleCheckout}
               >
