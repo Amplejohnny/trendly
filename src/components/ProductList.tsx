@@ -49,7 +49,7 @@ const ProductList = async ({
   const res = await productQuery.find();
 
   return (
-    <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
+    <div className="mt-12 flex gap-x-8 gap-y-16 flex-wrap">
       {res.items.map((product: products.Product) => (
         <Link
           href={"/" + product.slug}
